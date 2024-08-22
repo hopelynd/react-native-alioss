@@ -72,11 +72,12 @@ public class AliyunUploadManager {
      */
     public void asyncUpload(final ReactContext context, String bucketName, String ossFile, String sourceFile, ReadableMap options, final Promise promise) {
         // Content to file:// start
+        sourceFile = sourceFile.replace("file:///", "/");
         Uri selectedVideoUri = Uri.parse(sourceFile);
 
         // 1. content uri -> file path
         // 2. inputstream -> temp file path
-        Cursor cursor = null;
+        /* Cursor cursor = null;
         try {
             String[] proj = {MediaStore.Images.Media.DATA};
             cursor = context.getCurrentActivity().getContentResolver().query(selectedVideoUri, proj, null, null, null);
@@ -90,11 +91,15 @@ public class AliyunUploadManager {
             if (cursor != null) {
                 cursor.close();
             }
-        }
+        } */
         // init upload request
         PutObjectRequest put = new PutObjectRequest(bucketName, ossFile, sourceFile);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType("application/octet-stream");
+        if (options.hasKey("contentType")) {
+           metadata.setContentType(options.getString("contentType"));
+        }
+
         put.setMetadata(metadata);
 
         // set callback
@@ -277,10 +282,11 @@ public class AliyunUploadManager {
      */
     public void multipartUpload(final ReactContext context,String bucketName, String objectKey, String uploadId,String filepath, ReadableMap options,final Promise promise) {
 
+        sourceFile = sourceFile.replace("file:///", "/");
         Uri selectedVideoUri = Uri.parse(filepath);
         // 1. content uri -> file path
         // 2. inputstream -> temp file path
-        Cursor cursor = null;
+        /* Cursor cursor = null;
         try {
             String[] proj = {MediaStore.Images.Media.DATA};
             cursor = context.getCurrentActivity().getContentResolver().query(selectedVideoUri, proj, null, null, null);
@@ -294,6 +300,12 @@ public class AliyunUploadManager {
             if (cursor != null) {
                 cursor.close();
             }
+        } */
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("application/octet-stream");
+        if (options.hasKey("contentType")) {
+           metadata.setContentType(options.getString("contentType"));
         }
 
         long partSize = options.getInt("partSize"); // 设置分片大小
