@@ -3,7 +3,6 @@
   "version": "1.0.0-alpha.7",
   "description": "React Native SDK for aliyun object storage service",
   "main": "index.js",
-  "private": "false",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
